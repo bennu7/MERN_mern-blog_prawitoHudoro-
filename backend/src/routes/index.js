@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const userRoute = require("./users");
-const productRoute = require("./product");
+const authRoute = require("./auth");
+const blogRoute = require("./blog");
 
 // handle untuk error CORS
 router.use((req, res, next) => {
@@ -15,6 +16,7 @@ router.use((req, res, next) => {
 });
 
 router.use("/api/v1/users", userRoute);
-router.use("/api/v1/products", productRoute);
+router.use("/api/v1/auth", authRoute);
+router.use("/api/v1/blog", blogRoute);
 
 module.exports = router;

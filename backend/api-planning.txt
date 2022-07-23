@@ -59,6 +59,34 @@ res:
     }
 }
 
+[3] - Blog
+[POST] : {root.api}/{version}/blog/post
+
+req:
+{
+    "title" : "Title Blog",
+    "image" : "imagFile.png",
+    "body" : "Qui aliqua nostrud ad sunt. Officia sunt et proident cupidatat irure aute incididunt consequat ex. Enim nulla quis duis quis enim ut ut aliquip sunt cupidatat."
+}
+
+res:
+{
+    "post_id": 1,
+    "title" : "Title Blog",
+    "image" : "imagFile.png",
+    "body" : "Qui aliqua nostrud ad sunt. Officia sunt et proident cupidatat irure aute incididunt consequat ex. Enim nulla quis duis quis enim ut ut aliquip sunt cupidatat.",
+    "createdAt" : "23/07/2022",
+    "author" : {
+        "uid": 1,
+        "name": "testing",
+    }
+
+}
+
+err-response:
+201 -> Blog Post Berhasil Dibuat
+400 -> Input yang anda masukkan tidak valid
+
 
 GROUP: BLOG
 
