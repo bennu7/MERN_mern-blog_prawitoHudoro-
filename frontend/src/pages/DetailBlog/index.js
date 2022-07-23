@@ -1,8 +1,12 @@
 import React from "react";
 import { RegisterBg } from "../../assets";
+import { Gap, Link } from "../../components";
 import "./detail-blog.scss";
+import { useHistory } from "react-router-dom";
 
 const DetailBlog = () => {
+  const history = useHistory();
+
   return (
     <div className="detail-blog-wrapper">
       <img className="img-cover" src={RegisterBg} alt="thumb" />
@@ -22,6 +26,13 @@ const DetailBlog = () => {
         fugiat qui enim sint occaecat ipsum. Deserunt ullamco qui laboris
         officia fugiat. Mollit non consequat nostrud deserunt ex ut Lorem ex.
       </p>
+      <Gap height={20} />
+      <Link
+        title={"Kembali ke Home"}
+        onClick={() => {
+          history.push("/home");
+        }}
+      />
     </div>
   );
 };
