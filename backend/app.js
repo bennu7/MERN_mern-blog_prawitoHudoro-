@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
@@ -10,6 +11,7 @@ const mongoose = require("mongoose");
 const app = express();
 
 app.use(bodyParser.json());
+const { PORT } = process.env;
 
 app.use(logger("dev"));
 app.use(express.json());
@@ -36,7 +38,7 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(() => {
-    console.log("connect to mongodb");
+    console.log("connect to mongodb in port :", PORT);
   })
   .catch((err) => {
     console.log("failed connect to mongodb : ", err);

@@ -5,10 +5,12 @@ const blogController = require("../controllers/blog");
 const { body } = require("express-validator");
 
 router.post(
-  "/post",
+  "/",
   body("title").isLength({ min: 5 }).withMessage("input title tidak sesuai"),
   body("body").isLength({ min: 5 }).withMessage("input body tidak sesuai"),
   blogController.createBlogPost
 );
+
+router.get("/", blogController.getBlogPost);
 
 module.exports = router;

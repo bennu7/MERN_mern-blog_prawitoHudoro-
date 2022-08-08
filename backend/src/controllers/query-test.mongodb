@@ -1,0 +1,41 @@
+// MongoDB Playground
+// Use Ctrl+Space inside a snippet or a string literal to trigger completions.
+
+// The current database to use.
+use('mern-blog');
+
+// db.blogposts.drop()
+db.blogs.find();
+
+// db.blogs.insertMany([{
+//   judul: "belajar JS",
+//   body: "hingga mahir",
+//   author: {
+//           uid: 1,
+//           name: "lalu ibnu",
+//         },
+// }])
+
+// Search for documents in the current collection
+// db.getCollection('blogs')
+//   .find(
+//     {
+//       /*
+//       * Filter
+//       * fieldA: value or expression
+//       */
+//     },
+//     {
+//       /*
+//       * Projection
+//       * _id: 0, // exclude _id
+//       * fieldA: 1 // include field
+//       */
+//     }
+//   )
+//   .sort({
+//     /*
+//     * fieldA: 1 // ascending
+//     * fieldB: -1 // descending
+//     */
+//   });
