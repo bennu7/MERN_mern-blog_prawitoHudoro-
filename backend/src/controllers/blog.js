@@ -58,14 +58,44 @@ exports.createBlogPost = async (req, res, next) => {
   }
 };
 
-exports.getBlogPost = async (req, res, next) => {
+exports.getAllBlogPost = async (req, res, next) => {
   try {
-    const data = await BlogPost.find();
+    let currentPage = parseInt(req.query.page) || 1;
+    const perPage = parseInt(req.query.perPage) || 2;
+    let totalItems;
 
-    res.status(200).json({
-      status: true,
-      data,
-    });
+    log("currentPage => ", currentPage);
+
+    await BlogPost.find()
+      .countDocuments()
+      .then(async (count) => {
+        totalItems = count;
+        // proeses pagination
+        const total = await BlogPost.find()
+          .skip((currentPage - 1) * perPage)
+          .limit(perPage);
+
+        // menghitung jumlah page
+        let totalPage = Math.ceil(totalItems / perPage);
+
+        return res.sendJson(200, true, "success get blog post data", {
+          data: total,
+          total_data: totalItems,
+          per_page: perPage,
+          current_page: currentPage,
+          total_page: totalPage,
+        });
+      })
+      .catch((err) => {
+        res.sendBadRequest(err.message);
+      });
+
+    // const data = await BlogPost.find();
+
+    // res.status(200).json({
+    //   status: true,
+    //   data,
+    // });
   } catch (err) {
     console.log("err => ", err);
     return res.status(500).json({
