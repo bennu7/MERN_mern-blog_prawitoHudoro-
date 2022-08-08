@@ -1,7 +1,9 @@
 const { validationResult } = require("express-validator");
 const BlogPost = require("../models/blog");
 const { promisify } = require("util");
+const path = require("path");
 const fs = require("fs");
+const { log } = require("console");
 const unlinkFrom = promisify(fs.unlink);
 
 exports.createBlogPost = async (req, res, next) => {
@@ -116,8 +118,8 @@ exports.updateBlogById = async (req, res, next) => {
     let image = req.file;
     const { id } = req.params;
 
-    console.log("id => ", id);
-    console.log("image => ", image);
+    // console.log("id => ", id);
+    // console.log("image => ", image);
 
     if (image) {
       const data = await BlogPost.findById(id);
@@ -125,7 +127,10 @@ exports.updateBlogById = async (req, res, next) => {
         return res.sendNotFound("id tidak ditemukan");
       }
       // hapus dulu file sebelumnya sebelum di update
-      unlinkFrom(data.image);
+      // unlinkFrom(data.image);
+      fs.unlink(data.image, (err) => {
+        console.log(err);
+      });
     }
 
     await BlogPost.findByIdAndUpdate(id, {
@@ -134,7 +139,12 @@ exports.updateBlogById = async (req, res, next) => {
       image: image.path,
     })
       .then(async (result) => {
-        return res.sendJson(200, true, "update success", {
+        // read untuk mengambil data terbaru
+        result = await BlogPost.findById(result.id);
+
+        console.log("result update => ", result);
+
+        await res.sendJson(200, true, "update success", {
           title: result.title,
           body: result.body,
           image: result.image,
@@ -152,4 +162,38 @@ exports.updateBlogById = async (req, res, next) => {
       message: err.message,
     });
   }
+};
+
+exports.deleteBlogById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    await BlogPost.findById(id)
+      .then(async (result) => {
+        if (!result) {
+          return res.sendNotFound("id post not found");
+        }
+
+        removeImage(result.image);
+        console.log("result delete => ", result);
+        await BlogPost.findByIdAndRemove(result.id);
+        // return BlogPost.findByIdAndRemove(result.id);
+        res.sendJson(200, true, "delete success", result);
+      })
+      .catch((err) => {
+        return res.sendNotFound("id not found");
+      });
+  } catch (err) {
+    console.log("err => ", err);
+    return res.sendServerError(err.message);
+  }
+};
+
+const removeImage = (filePath) => {
+  // posisikan file __dirname ke file image dengan kembali dua kali "../.." agar masuk ke folder images
+  filePath = path.join(__dirname, "../..", filePath);
+  // console.log("filepath modif => ", filePath);
+  fs.unlink(filePath, (err) => {
+    console.log(err);
+  });
 };

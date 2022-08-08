@@ -19,5 +19,6 @@ router.put(
   body("body").isLength({ min: 5 }).withMessage("input body tidak sesuai"),
   blogController.updateBlogById
 );
+router.delete("/:id", blogController.deleteBlogById);
 
 module.exports = router;
