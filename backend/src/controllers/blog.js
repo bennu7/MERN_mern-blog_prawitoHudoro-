@@ -51,6 +51,7 @@ exports.createBlogPost = async (req, res, next) => {
     //     console.log("err : ", err);
     //   });
   } catch (err) {
+    console.log("err => ", err);
     return res.status(500).json({
       status: false,
       message: err,
@@ -67,6 +68,39 @@ exports.getBlogPost = async (req, res, next) => {
       data,
     });
   } catch (err) {
+    console.log("err => ", err);
+    return res.status(500).json({
+      status: false,
+      message: err,
+    });
+  }
+};
+
+exports.getBlogById = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+
+    console.log("id => ", id);
+
+    // const data = await BlogPost.find({
+    //   _id: ObjectId(id),
+    // });
+    const data = await BlogPost.findById(id);
+
+    if (!data) {
+      res.status(404).json({
+        status: false,
+        message: "id not found",
+        data: null,
+      });
+    }
+
+    res.status(200).json({
+      status: true,
+      data,
+    });
+  } catch (err) {
+    console.log("err => ", err);
     return res.status(500).json({
       status: false,
       message: err,

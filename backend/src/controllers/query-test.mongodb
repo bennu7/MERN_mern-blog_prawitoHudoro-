@@ -5,7 +5,14 @@
 use('mern-blog');
 
 // db.blogposts.drop()
-db.blogposts.find();
+// db.blogposts.find();
+
+db.blogposts.find({
+    _id: ObjectId("62f09d9f16239c1183a74a53")
+})
+// db.blogposts.findOne({
+//     _id: ObjectId("62f09d9f16239c1183a74a53")
+// })
 
 // db.blogs.insertMany([{
 //   judul: "belajar JS",
