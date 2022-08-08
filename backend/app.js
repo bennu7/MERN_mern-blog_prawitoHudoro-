@@ -41,6 +41,8 @@ const fileFilter = (req, file, cb) => {
 };
 
 app.use(bodyParser.json());
+// handle images middleware for get images
+app.use("/images", express.static(path.join(__dirname, "images")));
 app.use(
   multer({ storage: fileStorage, fileFilter: fileFilter }).single("images")
 );
