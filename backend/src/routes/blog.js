@@ -13,5 +13,11 @@ router.post(
 
 router.get("/", blogController.getBlogPost);
 router.get("/:id", blogController.getBlogById);
+router.put(
+  "/:id",
+  body("title").isLength({ min: 5 }).withMessage("input title tidak sesuai"),
+  body("body").isLength({ min: 5 }).withMessage("input body tidak sesuai"),
+  blogController.updateBlogById
+);
 
 module.exports = router;

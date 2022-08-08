@@ -1,5 +1,8 @@
 const { validationResult } = require("express-validator");
 const BlogPost = require("../models/blog");
+const { promisify } = require("util");
+const fs = require("fs");
+const unlinkFrom = promisify(fs.unlink);
 
 exports.createBlogPost = async (req, res, next) => {
   try {
@@ -13,17 +16,11 @@ exports.createBlogPost = async (req, res, next) => {
     }
 
     if (!req.file) {
-      const err = new Error("Image harus di upload");
-      err.errorStatus = 400;
-      err.data = errors.array();
-      throw err;
+      return res.sendJson(422, false, "Image harus di upload");
     }
 
     const { title, body } = req.body;
     const image = req.file.path;
-
-    console.log("image file path => ", image);
-    // const { image } = req.file;
 
     const Posting = await BlogPost.insertMany([
       {
@@ -54,7 +51,7 @@ exports.createBlogPost = async (req, res, next) => {
     console.log("err => ", err);
     return res.status(500).json({
       status: false,
-      message: err,
+      message: err.message,
     });
   }
 };
@@ -71,7 +68,7 @@ exports.getBlogPost = async (req, res, next) => {
     console.log("err => ", err);
     return res.status(500).json({
       status: false,
-      message: err,
+      message: err.message,
     });
   }
 };
@@ -82,9 +79,6 @@ exports.getBlogById = async (req, res, next) => {
 
     console.log("id => ", id);
 
-    // const data = await BlogPost.find({
-    //   _id: ObjectId(id),
-    // });
     const data = await BlogPost.findById(id);
 
     if (!data) {
@@ -103,7 +97,59 @@ exports.getBlogById = async (req, res, next) => {
     console.log("err => ", err);
     return res.status(500).json({
       status: false,
-      message: err,
+      message: err.message,
+    });
+  }
+};
+
+exports.updateBlogById = async (req, res, next) => {
+  try {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      const err = new Error("Input value tidak sesuai");
+      err.errorStatus = 400;
+      err.data = errors.array(); //errors.array() akan dilooping jika lebih dari 1 error
+      throw err;
+    }
+    const { title, body } = req.body;
+    let image = req.file;
+    const { id } = req.params;
+
+    console.log("id => ", id);
+    console.log("image => ", image);
+
+    if (image) {
+      const data = await BlogPost.findById(id);
+      if (!data) {
+        return res.sendNotFound("id tidak ditemukan");
+      }
+      // hapus dulu file sebelumnya sebelum di update
+      unlinkFrom(data.image);
+    }
+
+    await BlogPost.findByIdAndUpdate(id, {
+      title,
+      body,
+      image: image.path,
+    })
+      .then(async (result) => {
+        return res.sendJson(200, true, "update success", {
+          title: result.title,
+          body: result.body,
+          image: result.image,
+        });
+      })
+      .catch((result) => {
+        return res.sendNotFound("id data not found", result);
+      });
+
+    // res.sendJson(200, true, "update success", updated);
+  } catch (err) {
+    console.log("err => ", err);
+    return res.status(500).json({
+      status: false,
+      message: err.message,
     });
   }
 };

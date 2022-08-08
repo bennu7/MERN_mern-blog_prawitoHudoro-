@@ -10,6 +10,7 @@ const mongoose = require("mongoose");
 const multer = require("multer");
 
 const app = express();
+const response = require("./src/helpers/response");
 
 const fileStorage = multer.diskStorage({
   // cb = callback
@@ -52,6 +53,7 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(response);
 // app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
