@@ -7,10 +7,43 @@ const logger = require("morgan");
 const indexRouter = require("./src/routes/index");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const multer = require("multer");
 
 const app = express();
 
+const fileStorage = multer.diskStorage({
+  // cb = callback
+  destination: (req, file, cb) => {
+    //parameter pertama null => success errornya tidak ada, parameter kedua "images" => lokasi file image
+    cb(null, "images");
+  },
+  filename: (req, file, cb) => {
+    cb(
+      null,
+      new Date().getTime() + "-" + file.originalname.split(" ").join("-")
+    );
+  },
+});
+
+const fileFilter = (req, file, cb) => {
+  // filter hanya image saja yang boleh di upload, buka file pdf dll
+  if (
+    file.mimetype === "image/png" ||
+    file.mimetype === "image/jpg" ||
+    file.mimetype === "image/jpeg"
+  ) {
+    // prosesnya diterima dan dilanjutkan jika memnuhi kriteia tersebut
+    cb(null, true);
+  } else {
+    // jika tidak terpenuhi maka beri false
+    cb(null, false);
+  }
+};
+
 app.use(bodyParser.json());
+app.use(
+  multer({ storage: fileStorage, fileFilter: fileFilter }).single("images")
+);
 const { PORT } = process.env;
 
 app.use(logger("dev"));

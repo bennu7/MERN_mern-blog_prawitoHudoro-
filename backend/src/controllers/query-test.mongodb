@@ -5,7 +5,7 @@
 use('mern-blog');
 
 // db.blogposts.drop()
-db.blogs.find();
+db.blogposts.find();
 
 // db.blogs.insertMany([{
 //   judul: "belajar JS",

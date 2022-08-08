@@ -3,8 +3,6 @@ const BlogPost = require("../models/blog");
 
 exports.createBlogPost = async (req, res, next) => {
   try {
-    const { title, body } = req.body;
-
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -14,10 +12,24 @@ exports.createBlogPost = async (req, res, next) => {
       throw err;
     }
 
+    if (!req.file) {
+      const err = new Error("Image harus di upload");
+      err.errorStatus = 400;
+      err.data = errors.array();
+      throw err;
+    }
+
+    const { title, body } = req.body;
+    const image = req.file.path;
+
+    console.log("image file path => ", image);
+    // const { image } = req.file;
+
     const Posting = await BlogPost.insertMany([
       {
         title,
         body,
+        image,
         author: {
           uid: 1,
           name: "lalu ibnu",
