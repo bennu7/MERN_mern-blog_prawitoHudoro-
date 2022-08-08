@@ -1,9 +1,22 @@
-import React from "react";
+import { React, useEffect } from "react";
 import { BlogItem, Button, Gap } from "../../components";
 import "./home.scss";
 import { useHistory } from "react-router-dom";
+import Axios from "axios";
+
+const baseUrl = "http://localhost:3000/api/v1/blog";
 
 const Home = () => {
+  useEffect(() => {
+    console.log("harusnya keluar", baseUrl);
+    Axios.get(baseUrl)
+      .then((result) => {
+        console.log("data API => ", result.data);
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+  }, []);
   const history = useHistory();
 
   return (

@@ -8,6 +8,7 @@ const indexRouter = require("./src/routes/index");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const multer = require("multer");
+const helmet = require("helmet");
 
 const app = express();
 const response = require("./src/helpers/response");
@@ -54,6 +55,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(response);
+app.use(helmet());
 // app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
