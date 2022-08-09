@@ -3,11 +3,15 @@ import { BlogItem, Button, Gap } from "../../components";
 import "./home.scss";
 import { useHistory } from "react-router-dom";
 import Axios from "axios";
+import { useSelector } from "react-redux";
 
 const baseUrl = "http://localhost:3000/";
 
 const Home = () => {
   const [dataBlog, setDataBlog] = useState([]);
+
+  const stateGlobal = useSelector((state) => state);
+  console.log("state global => ", stateGlobal);
 
   useEffect(() => {
     Axios.get(baseUrl + "api/v1/blog?page=1&perPage=10")
