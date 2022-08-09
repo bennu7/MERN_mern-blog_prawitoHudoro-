@@ -3,28 +3,35 @@ import { BlogItem, Button, Gap } from "../../components";
 import "./home.scss";
 import { useHistory } from "react-router-dom";
 import Axios from "axios";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 const baseUrl = "http://localhost:3000/";
 
 const Home = () => {
-  const [dataBlog, setDataBlog] = useState([]);
-
-  const stateGlobal = useSelector((state) => state);
-  console.log("state global => ", stateGlobal);
+  const history = useHistory();
+  // const [dataBlog, setDataBlog] = useState([]);
+  const dispatch = useDispatch();
+  // const stateGlobal = useSelector((state) => state);
+  // console.log("state global => ", stateGlobal);
+  const { dataBlogs, name } = useSelector((state) => state);
+  console.log("data blog global : ", dataBlogs);
 
   useEffect(() => {
+    // setTimeout(() => {
+    //   dispatch({ type: "UPDATE_NAME" });
+    // }, 3000);
+
     Axios.get(baseUrl + "api/v1/blog?page=1&perPage=10")
       .then((result) => {
         const responseAPI = result.data.data;
 
-        setDataBlog(responseAPI.data);
+        // setDataBlog(responseAPI.data);
+        dispatch({ type: "UPDATE_DATA_BLOG", payload: responseAPI.data });
       })
       .catch((err) => {
         console.log(err.message);
       });
-  }, []);
-  const history = useHistory();
+  }, [dispatch]);
 
   return (
     <div className="home-page-wrapper">
@@ -36,11 +43,13 @@ const Home = () => {
           }}
         />
       </div>
+      <p>state global : {name}</p>
+      {/* <p>{stateGlobal.name}</p> */}
       <Gap height={20} />
       <div className="content-wrapper">
         {/* better make metode ini null */}
-        {Array.isArray(dataBlog)
-          ? dataBlog.map((blog) => {
+        {Array.isArray(dataBlogs)
+          ? dataBlogs.map((blog) => {
               return (
                 <BlogItem
                   key={blog._id}
