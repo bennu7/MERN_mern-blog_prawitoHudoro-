@@ -1,17 +1,20 @@
-import { React, useEffect } from "react";
+import { React, useEffect, useState } from "react";
 import { BlogItem, Button, Gap } from "../../components";
 import "./home.scss";
 import { useHistory } from "react-router-dom";
 import Axios from "axios";
 
-const baseUrl = "http://localhost:3000/api/v1/blog";
+const baseUrl = "http://localhost:3000/";
 
 const Home = () => {
+  const [dataBlog, setDataBlog] = useState([]);
+
   useEffect(() => {
-    console.log("harusnya keluar", baseUrl);
-    Axios.get(baseUrl)
+    Axios.get(baseUrl + "api/v1/blog?page=1&perPage=10")
       .then((result) => {
-        console.log("data API => ", result.data);
+        const responseAPI = result.data.data;
+
+        setDataBlog(responseAPI.data);
       })
       .catch((err) => {
         console.log(err.message);
@@ -31,11 +34,24 @@ const Home = () => {
       </div>
       <Gap height={20} />
       <div className="content-wrapper">
-        <BlogItem />
-        <BlogItem />
-        <BlogItem />
-        <BlogItem />
-        <BlogItem />
+        {/* better make metode ini null */}
+        {Array.isArray(dataBlog)
+          ? dataBlog.map((blog) => {
+              return (
+                <BlogItem
+                  key={blog._id}
+                  image={baseUrl + blog.image}
+                  title={blog.title}
+                  body={blog.body}
+                  name={blog.author.name}
+                  date={blog.createdAt}
+                />
+              );
+            })
+          : null}
+        {/* {dataBlog.map((blog) => {
+          return <BlogItem key={blog._id} />;
+        })} */}
       </div>
       <div className="pagination">
         <Button title={"Previoes"} />

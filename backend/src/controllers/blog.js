@@ -61,7 +61,7 @@ exports.createBlogPost = async (req, res, next) => {
 exports.getAllBlogPost = async (req, res, next) => {
   try {
     let currentPage = parseInt(req.query.page) || 1;
-    const perPage = parseInt(req.query.perPage) || 2;
+    const perPage = parseInt(req.query.perPage) || 4;
     let totalItems;
 
     log("currentPage => ", currentPage);
