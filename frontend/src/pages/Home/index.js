@@ -1,4 +1,4 @@
-import { React, useEffect, useState } from "react";
+import { React, useEffect } from "react";
 import { BlogItem, Button, Gap } from "../../components";
 import "./home.scss";
 import { useHistory } from "react-router-dom";
@@ -11,16 +11,13 @@ const Home = () => {
   const history = useHistory();
   // const [dataBlog, setDataBlog] = useState([]);
   const dispatch = useDispatch();
-  // const stateGlobal = useSelector((state) => state);
-  // console.log("state global => ", stateGlobal);
-  const { dataBlogs, name } = useSelector((state) => state);
-  console.log("data blog global : ", dataBlogs);
+  // const { dataBlogs, name } = useSelector((state) => state);
+  // console.log("data blog global : ", dataBlogs);
+
+  const dataBlog = useSelector((state) => state.homeReducer.dataBlog);
+  console.log(dataBlog);
 
   useEffect(() => {
-    // setTimeout(() => {
-    //   dispatch({ type: "UPDATE_NAME" });
-    // }, 3000);
-
     Axios.get(baseUrl + "api/v1/blog?page=1&perPage=10")
       .then((result) => {
         const responseAPI = result.data.data;
@@ -43,13 +40,13 @@ const Home = () => {
           }}
         />
       </div>
-      <p>state global : {name}</p>
+      {/* <p>state global : {name}</p> */}
       {/* <p>{stateGlobal.name}</p> */}
       <Gap height={20} />
       <div className="content-wrapper">
         {/* better make metode ini null */}
-        {Array.isArray(dataBlogs)
-          ? dataBlogs.map((blog) => {
+        {Array.isArray(dataBlog)
+          ? dataBlog.map((blog) => {
               return (
                 <BlogItem
                   key={blog._id}
